@@ -1,4 +1,4 @@
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 
 # React Tutorial
 
@@ -52,4 +52,3 @@ You can change the port number by setting the `$PORT` environment variable befor
 
 ```sh
 PORT=3001 node server.js
-```
