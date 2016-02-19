@@ -5,6 +5,8 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.4.3",
+    "mongoose": "^4.4.4",
+    "shortid": "^2.2.4",
     "express": "^4.4.5"
   },
   "devDependencies": {},
@@ -14,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactjs/react-tutorial.git"
+    "url": "git+https://github.com/reactjs/react-tutorial.git"
   },
   "keywords": [
     "react",
@@ -27,7 +29,8 @@
     "url": "https://github.com/reactjs/react-tutorial/issues"
   },
   "homepage": "https://github.com/reactjs/react-tutorial",
-  "engines" : {
-    "node" : "0.12.x"
-  }
+  "engines": {
+    "node": "0.12.x"
+  },
+  "license": "ISC"
 }
