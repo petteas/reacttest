@@ -22,11 +22,11 @@ var Doctor;
 var Reading;
 
 /*Heroku*/
-/*    mongoose.connect('mongodb://heroku_9sn4dpcl:ilqm8de0tqq51c7th5mlrnlhql@ds059185.mongolab.com:59185/heroku_9sn4dpcl');*/
+    mongoose.connect('mongodb://heroku_9sn4dpcl:ilqm8de0tqq51c7th5mlrnlhql@ds059185.mongolab.com:59185/heroku_9sn4dpcl');
 
 /*Localhost*/
 
-mongoose.connect('mongodb://localhost:27017');
+/*mongoose.connect('mongodb://localhost:27017');*/
 
 var db = mongoose.connection;
 
