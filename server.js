@@ -22,11 +22,11 @@ var Doctor;
 var Reading;
 
 /*Heroku*/
-    mongoose.connect('mongodb://heroku_9sn4dpcl:ilqm8de0tqq51c7th5mlrnlhql@ds059185.mongolab.com:59185/heroku_9sn4dpcl');
+/*    mongoose.connect('mongodb://heroku_9sn4dpcl:ilqm8de0tqq51c7th5mlrnlhql@ds059185.mongolab.com:59185/heroku_9sn4dpcl');*/
 
 /*Localhost*/
 
-/*mongoose.connect('mongodb://localhost:27017');*/
+mongoose.connect('mongodb://localhost:27017');
 
 var db = mongoose.connection;
 
@@ -46,9 +46,9 @@ db.once('open', function() {
     });
     var readingSchema = new Schema({
         id    : String,
+        date: Date,
         patientId : String,
-        date      : Date,
-        glucoseValue     : Number,
+        glucoseValue : Number,
         sugarValue: Number
     });
 
@@ -98,6 +98,28 @@ app.get('/api/getdoctors', function(req, res) {
 
 });
 
+app.post('/api/getpatientfordoctor', function(req, res) {
+    var doctorId = req.query.doctorid;
+    console.log("Recceived call to get all patients for a specific doctor");
+    Patient.find({ doctorId: doctorId },function (err, patients) {
+        if (err) return console.error(err);
+        console.log(patients);
+        res.send(JSON.stringify(patients));
+    })
+
+});
+
+app.post('/api/getreadingsforpatient', function(req, res) {
+    var patientId = req.query.patientid;
+    console.log("Recceived call to get all readings for a specific patient");
+    Reading.find({ patientId: patientId },function (err, readings) {
+        if (err) return console.error(err);
+        console.log(readings);
+        res.send(JSON.stringify(readings));
+    })
+
+});
+
 app.post('/api/createpatient', function(req, res) {
     console.log("Recceived Create Patient-call");
     var name = req.query.name;
@@ -130,19 +152,48 @@ app.post('/api/createdoctor', function(req, res) {
         if (err) return console.error(err);
         console.log("Save Success");
         console.log(doctor.name);
-        res.send(JSON.stringify({id: ID}));
+        res.sendStatus(200);
     });
 });
 
 app.post('/api/assignpatienttodoctor', function(req, res) {
-    var name = req.query.name;
-    console.log(name);
-    console.log(doctorId);
-    var ID = shortid.generate();
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({id: ID}));
+    var patientId = req.query.patientid;
+    var doctorId = req.query.doctorid;
+    console.log("Recceived call to assign patient to doctor");
+    Patient.find({ id: patientId },function (err, patients) {
+        if (err) return console.error(err);
+        console.log(patients);
+        if(patients.length == 0){
+            return console.error(err);
+        }
+        var patient = patients[0];
+        patient.doctorId = doctorId;
+        patient.save(function (err, patient) {
+            if (err) return console.error(err);
+            console.log(patient.doctorId);
+            res.sendStatus(200);
+        });
+
+    })
+
 });
 
+app.post('/api/createReading', function(req, res) {
+    console.log("Recceived Create Reading-call");
+    var patientId = req.query.patientid;
+    var glucoseValue = req.query.glucosevalue;
+    var sugarValue = req.query.sugarvalue;
+    var ID = shortid.generate();
+    res.setHeader('Content-Type', 'application/json');
+    var reading = new Reading({ id: ID, date: Date.now(),patientId: patientId,glucoseValue:glucoseValue,sugarValue:sugarValue });
+    console.log("reading glucosevalue is:");
+    console.log(reading.glucoseValue); // 'Silence'
+    reading.save(function (err, reading) {
+        if (err) return console.error(err);
+        console.log("Save Success");
+        res.sendStatus(200);
+    });
+});
 
 
 app.listen(app.get('port'), function() {
