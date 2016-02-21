@@ -16,13 +16,57 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var shortid = require('shortid');
-var mongose = require("mongoose");
+var mongoose = require("mongoose");
+var Patient;
+var Doctor;
+var Reading;
 
-var db = mongose.connection;
+/*Heroku*/
+    mongoose.connect('mongodb://heroku_9sn4dpcl:ilqm8de0tqq51c7th5mlrnlhql@ds059185.mongolab.com:59185/heroku_9sn4dpcl');
+
+/*Localhost*/
+
+/*mongoose.connect('mongodb://localhost:27017');*/
+
+var db = mongoose.connection;
 
 db.on('error', console.error);
 db.once('open', function() {
-  // Create your schemas and models here.
+  console.log("Connected biatch!");
+    var Schema = mongoose.Schema;
+
+    var patientSchema = new Schema({
+        id    : String,
+        name     : String,
+        doctorId : String
+    });
+    var doctorSchema = new Schema({
+        id    : String,
+        name     : String
+    });
+    var readingSchema = new Schema({
+        id    : String,
+        patientId : String,
+        date      : Date,
+        glucoseValue     : Number,
+        sugarValue: Number
+    });
+
+    Patient = mongoose.model('Patient', patientSchema);
+    Doctor = mongoose.model('Doctor', doctorSchema);
+    Reading = mongoose.model('Reading', readingSchema);
+    var petter = new Patient({ id: shortid.generate(), name: 'Petter',doctorId: shortid.generate() });
+    console.log("Petters name is:");
+    console.log(petter.name); // 'Silence'
+    petter.save(function (err, petter) {
+        if (err) return console.error(err);
+        console.log("Save Success");
+        console.log(petter.name);
+    });
+    Patient.find(function (err, patients) {
+        if (err) return console.error(err);
+        console.log(patients);
+    })
 });
 var COMMENTS_FILE = path.join(__dirname, 'comments.json');
 
@@ -45,16 +89,58 @@ app.use(function(req, res, next) {
 
 
 app.get('/api/getdoctors', function(req, res) {
-  var result = [];
-  res.send(JSON.stringify([{id: 123424234,name:"Per Spelleman"},{id: 1234244334,name:"Ola nordmann"}]));
+    console.log("Recceived call to get all doctors");
+    Doctor.find(function (err, doctors) {
+        if (err) return console.error(err);
+        console.log(doctors);
+        res.send(JSON.stringify(doctors));
+    })
+
 });
 
 app.post('/api/createpatient', function(req, res) {
-  var name = req.query.name;
-  console.log(name);
-  var ID = shortid.generate();
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({id: ID,name:name}));
+    console.log("Recceived Create Patient-call");
+    var name = req.query.name;
+    var doctorId = req.query.doctorid;
+    console.log(name);
+    console.log(doctorId);
+    var ID = shortid.generate();
+    res.setHeader('Content-Type', 'application/json');
+    var patient = new Patient({ id: ID, name: name,doctorId: doctorId });
+    console.log("patient name is:");
+    console.log(patient.name); // 'Silence'
+    patient.save(function (err, patient) {
+        if (err) return console.error(err);
+        console.log("Save Success");
+        console.log(patient.name);
+        res.send(JSON.stringify({id: ID}));
+    });
+});
+
+app.post('/api/createdoctor', function(req, res) {
+    console.log("Recceived Create Doctor-call");
+    var name = req.query.name;
+    console.log(name);
+    var ID = shortid.generate();
+    res.setHeader('Content-Type', 'application/json');
+    var doctor = new Doctor({ id: ID, name: name});
+    console.log("doctor name is:");
+    console.log(doctor.name); // 'Silence'
+    doctor.save(function (err, doctor) {
+        if (err) return console.error(err);
+        console.log("Save Success");
+        console.log(doctor.name);
+        res.send(JSON.stringify({id: ID}));
+    });
+});
+
+app.post('/api/assignpatienttodoctor', function(req, res) {
+    var name = req.query.name;
+    console.log(name);
+    console.log(doctorId);
+    var ID = shortid.generate();
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({id: ID}));
 });
 
 
