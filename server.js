@@ -98,7 +98,27 @@ app.get('/api/getdoctors', function(req, res) {
 
 });
 
-app.post('/api/getpatientfordoctor', function(req, res) {
+app.get('/api/getpatients', function(req, res) {
+    console.log("Recceived call to get all doctors");
+    Patient.find(function (err, patients) {
+        if (err) return console.error(err);
+        console.log(patients);
+        res.send(JSON.stringify(patients));
+    })
+
+});
+
+app.get('/api/getreadings', function(req, res) {
+    console.log("Recceived call to get all doctors");
+    Reading.find(function (err, readings) {
+        if (err) return console.error(err);
+        console.log(readings);
+        res.send(JSON.stringify(readings));
+    })
+
+});
+
+app.get('/api/getpatientfordoctor', function(req, res) {
     var doctorId = req.query.doctorid;
     console.log("Recceived call to get all patients for a specific doctor");
     Patient.find({ doctorId: doctorId },function (err, patients) {
@@ -109,7 +129,7 @@ app.post('/api/getpatientfordoctor', function(req, res) {
 
 });
 
-app.post('/api/getreadingsforpatient', function(req, res) {
+app.get('/api/getreadingsforpatient', function(req, res) {
     var patientId = req.query.patientid;
     console.log("Recceived call to get all readings for a specific patient");
     Reading.find({ patientId: patientId },function (err, readings) {
@@ -156,7 +176,7 @@ app.post('/api/createdoctor', function(req, res) {
     });
 });
 
-app.post('/api/assignpatienttodoctor', function(req, res) {
+app.put('/api/assignpatienttodoctor', function(req, res) {
     var patientId = req.query.patientid;
     var doctorId = req.query.doctorid;
     console.log("Recceived call to assign patient to doctor");

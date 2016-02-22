@@ -1,7 +1,21 @@
-
+/*var Alert = require('react-bootstrap').Alert;*/
 var PettersComponent = React.createClass({
+    loadCommentsFromServer: function() {
+
+    },
   doSomething: function(){
-    alert("Amanda, Jeg elsker deg <3. Vil du være med meg for alltid?");
+      $.ajax({
+          url: "http://localhost:3000/api/getdoctors",
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+              alert("success");
+              console.log(data);
+          }.bind(this),
+          error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+          }.bind(this)
+      });
   },
   render: function() {
     var name = 'Petter';
@@ -15,7 +29,7 @@ var PettersComponent = React.createClass({
   }
 });
 
-React.render(
+ReactDOM.render(
   <div>
     <PettersComponent user="Petter">This guy is awesome</PettersComponent>
     <PettersComponent user="Amanda">She smells like flowers and is my best friend</PettersComponent>
