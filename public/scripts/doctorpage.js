@@ -1,4 +1,8 @@
-/*var Alert = require('react-bootstrap').Alert;*/
+var Alert = ReactBootstrap.Alert;
+console.log(Alert);
+if(Alert){
+  console.log("alert er satt");
+};
 var PettersComponent = React.createClass({
     loadCommentsFromServer: function() {
 

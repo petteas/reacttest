@@ -55,18 +55,6 @@ db.once('open', function() {
     Patient = mongoose.model('Patient', patientSchema);
     Doctor = mongoose.model('Doctor', doctorSchema);
     Reading = mongoose.model('Reading', readingSchema);
-    var petter = new Patient({ id: shortid.generate(), name: 'Petter',doctorId: shortid.generate() });
-    console.log("Petters name is:");
-    console.log(petter.name); // 'Silence'
-    petter.save(function (err, petter) {
-        if (err) return console.error(err);
-        console.log("Save Success");
-        console.log(petter.name);
-    });
-    Patient.find(function (err, patients) {
-        if (err) return console.error(err);
-        console.log(patients);
-    })
 });
 var COMMENTS_FILE = path.join(__dirname, 'comments.json');
 
@@ -92,8 +80,13 @@ app.get('/api/getdoctors', function(req, res) {
     console.log("Recceived call to get all doctors");
     Doctor.find(function (err, doctors) {
         if (err) return console.error(err);
-        console.log(doctors);
-        res.send(JSON.stringify(doctors));
+        var sendbackDoctors = [];
+        doctors.forEach(function(doctor){
+            var tempDoctor = {id : doctor.id,name:doctor.name};
+            sendbackDoctors.push(tempDoctor);
+        });
+        console.log("Sending response");
+        res.send(JSON.stringify(sendbackDoctors));
     })
 
 });
@@ -103,8 +96,14 @@ app.get('/api/getpatients', function(req, res) {
     Patient.find(function (err, patients) {
         if (err) return console.error(err);
         console.log(patients);
-        res.send(JSON.stringify(patients));
-    })
+        var sendbackPatients = [];
+        patients.forEach(function(patient){
+            var tempPatient = {id : patient.id,name:patient.name,doctorId:patient.doctorId};
+            sendbackPatients.push(tempPatient);
+        });
+        console.log("Sending response");
+        res.send(JSON.stringify(sendbackPatients));
+    });
 
 });
 
@@ -113,7 +112,13 @@ app.get('/api/getreadings', function(req, res) {
     Reading.find(function (err, readings) {
         if (err) return console.error(err);
         console.log(readings);
-        res.send(JSON.stringify(readings));
+        var sendbackReadings = [];
+        readings.forEach(function(reading){
+            var tempReading = {id: reading.id, date: reading.date, patientId : reading.patientId, glucoseValue : reading.glucoseValue, sugarValue: reading.sugarValue};
+            sendbackReadings.push(tempReading);
+        });
+        console.log("Sending response");
+        res.send(JSON.stringify(sendbackReadings));
     })
 
 });
@@ -124,7 +129,13 @@ app.get('/api/getpatientfordoctor', function(req, res) {
     Patient.find({ doctorId: doctorId },function (err, patients) {
         if (err) return console.error(err);
         console.log(patients);
-        res.send(JSON.stringify(patients));
+        var sendbackPatients = [];
+        patients.forEach(function(patient){
+            var tempPatient = {id : patient.id,name:patient.name,doctorId:patient.doctorId};
+            sendbackPatients.push(tempPatient);
+        });
+        console.log("Sending response");
+        res.send(JSON.stringify(sendbackPatients));
     })
 
 });
@@ -135,7 +146,13 @@ app.get('/api/getreadingsforpatient', function(req, res) {
     Reading.find({ patientId: patientId },function (err, readings) {
         if (err) return console.error(err);
         console.log(readings);
-        res.send(JSON.stringify(readings));
+        var sendbackReadings = [];
+        readings.forEach(function(reading){
+            var tempReading = {id: reading.id, date: reading.date, patientId : reading.patientId, glucoseValue : reading.glucoseValue, sugarValue: reading.sugarValue};
+            sendbackReadings.push(tempReading);
+        });
+        console.log("Sending response");
+        res.send(JSON.stringify(sendbackReadings));
     })
 
 });
